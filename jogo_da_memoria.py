@@ -10,31 +10,50 @@ contador = 1
 contador_de_jogadas = 0
 
 def resultado():
+    global flag
     print(lista_de_valores_jogados)
     print(lista_do_usuario)
-    global contador_de_jogadas
-    if lista_de_valores_jogados[contador_de_jogadas] == lista_do_usuario[contador_de_jogadas]:
-        contador_de_jogadas += 1
+    flag = False
+
+    for i in range(len(lista_do_usuario)):
+        if lista_do_usuario[i] == lista_de_valores_jogados[i]:
+            flag = True
+        else:
+            flag = False
+    if flag:
         return True
     return False
 
 
 def iniciando():
     global contador
-    global lista_de_valores_jogados
+    global lista_de_valores_jogados     
+    global lista_do_usuario
+
+    lista_do_usuario = []
     lista_valores = ['1', '2', '3', '4', '5']
     
     
     while True: 
+        print(lista_de_valores_jogados)
         time.sleep(2)
-        for i in range(contador):
-            valor = random.choice(lista_valores)
-            porta_serial.write(valor.encode())
-            print(valor)
-            lista_de_valores_jogados.append(valor)
+        valor = random.choice(lista_valores)
+        lista_de_valores_jogados.append(valor)
+        print(lista_de_valores_jogados)
+
+        for v in lista_de_valores_jogados:
+            porta_serial.write(v.encode())
             time.sleep(1)
             porta_serial.write('d'.encode())
             time.sleep(1)
+        # for i in range(contador):
+        #     valor = random.choice(lista_valores)
+        #     porta_serial.write(valor.encode())
+        #     print(valor)
+        #     lista_de_valores_jogados.append(valor)
+        #     time.sleep(1)
+        #     porta_serial.write('d'.encode())
+        #     time.sleep(1)
         contador += 1
         break
 
@@ -48,7 +67,7 @@ def tela_inicial():
 
     layout = [  
             [sg.Text("Joga da memoria", font=('Arial 16'))],
-            [sg.Text("Placar: 0", font=('Arial 12'))],
+            [sg.Text(f"Placar: {contador}", font=('Arial 12'))],
             [sg.Button('LED 1', size=(7,3), key='1'), sg.Button('LED 2', size=(7,3), key='2'), sg.Button('LED 3', size=(7,3), key='3')],
             [sg.Button('LED 4', size=(7,3), key='4'), sg.Button('LED 5', size=(7,3), key='5')],
             [sg.Button('Começar', size=(7,1), key='comecar')]
@@ -119,6 +138,7 @@ def tela_inicial():
             lista_do_usuario.append(eventos)
             if resultado():
                 print('Acertou')
+                iniciando()
             else:
                 print('errou')
         
@@ -128,6 +148,7 @@ def tela_inicial():
             lista_do_usuario.append(eventos)
             if resultado():
                 print('Acertou')
+                iniciando() 
             else:
                 print('errou')
         
